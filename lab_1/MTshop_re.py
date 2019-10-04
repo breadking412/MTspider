@@ -1,8 +1,11 @@
 # 使用正则表达式来爬取,(不用json)
+# 使用了 tqdm 模块是实现实时进度条刷新
+
 import re
+from time import sleep
 import requests
 import csv
-import logging
+from tqdm import tqdm
 
 
 # 获取某一页商家信息,
@@ -36,6 +39,11 @@ def get_shop_info(url, headers):
 
 
 if __name__ == '__main__':
+    page_num = 30
+    print("共要获取 %d 页， %d 家商家信息" % (page_num, (page_num)*15))
+    sleep(0.3)
+
+
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.146 "
                       "Safari/537.36 "
@@ -43,10 +51,12 @@ if __name__ == '__main__':
     with open(r'武汉美食.csv', "w", newline='', encoding='UTF-8') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(['poiID', '商家名', '平均得分', '地址', '平均价格', '获得评论总数'])
-        # 爬取每页的商家
-        for n in range(1, 50):
+
+        # 进度条
+
+        # 爬取每页商家
+        for n in tqdm(range(1, page_num+1), desc='页面抓取进度：'):
             url = 'https://wh.meituan.com/meishi/pn' + str(n) + '/'
-            print("正在获取第{}页商家信息".format(n))
             b_info = get_shop_info(url, headers)
 
             id_list = b_info[0]
@@ -60,7 +70,8 @@ if __name__ == '__main__':
                 writer.writerow(
                     [id_list[i], title_list[i], score_list[i], address_list[i], price_list[i], comment_list[i]])
 
-
+            sleep(0.1)
+        print("商家信息抓取完成，已写入到文件中  O(∩_∩)O")
 
 
 
