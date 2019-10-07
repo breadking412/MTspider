@@ -71,6 +71,7 @@ if __name__ == '__main__':
                     [id_list[i], title_list[i], score_list[i], address_list[i], price_list[i], comment_list[i]])
 
             sleep(0.1)
+        sleep(0.5)
         print("商家信息抓取完成，已写入到文件中  O(∩_∩)O")
 
 
